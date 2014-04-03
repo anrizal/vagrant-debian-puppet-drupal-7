@@ -12,13 +12,16 @@ BOX_URL = "http://files.vagrantup.com/precise64.box"
 MEMORY = "1024"
 
 # Network Settings.
-IP = "10.0.0.10"
+IP = "10.0.0.12"
 
 # Share/synced folder configuration
 HOST_FOLDER = "./sites"
 GUEST_FOLDER = "/home/vagrant/sites"
 
 #Provision source
+PUPPET_MANIFEST_PATH = "."
+PUPPET_MANIFEST_FILE = "puppet/manifests/default.pp"
+PUPPET_MODULE_PATH = "puppet/modules"
 
 #==========================================================================
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -40,6 +43,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Network Settings. Note, in 1.1++ no host only and no forward port option 
     config.vm.network :private_network, ip: IP
 
-  # configure shared/synced folder. we do not use NFS for Windows Host
-    config.vm.synced_folder HOST_FOLDER, GUEST_FOLDER, id: "vagrant-root", nfs: false
+  # configure shared/synced folder. 
+  # we do not use NFS for Windows Host
+  # we need extra permission setting for OSX
+  case RUBY_PLATFORM.downcase
+    when /cygwin|mswin|mingw|bccwin|wince|emx/ #windows
+      config.vm.synced_folder HOST_FOLDER, GUEST_FOLDER, id: "vagrant-root", nfs: false
+    when /darwin|mac os/ #OSX
+      config.vm.synced_folder HOST_FOLDER, GUEST_FOLDER, id: "vagrant-root", :owner=> 'vagrant', :group=>'www-data', :mount_options => ['dmode=775', 'fmode=775']
+    when /linux/ #linux
+      config.vm.synced_folder HOST_FOLDER, GUEST_FOLDER, id: "vagrant-root", nfs: true
+    else
+      puts "un-supported Operating System"
+  end
+
+  # Provisioning settings.
+    config.vm.provision :puppet do |puppet|
+      puppet.manifests_path = PUPPET_MANIFEST_PATH
+      puppet.manifest_file = PUPPET_MANIFEST_FILE
+      puppet.module_path = PUPPET_MODULE_PATH
+      puppet.options = "--verbose --debug"
+    end    
+
 end
