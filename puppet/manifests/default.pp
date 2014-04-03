@@ -11,3 +11,4 @@ class { 'drush':
   version => "5.9.0",
   owner => "vagrant",
   group => "vagrant", }
+class { 'xhprof': }

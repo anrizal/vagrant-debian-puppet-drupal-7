@@ -31,4 +31,8 @@ class drush (
     require => File["/opt/drush-${version}"],
   }
 
+ drush::conf_file { 'drush.ini':
+    version => $version,
+ }
+
 }
