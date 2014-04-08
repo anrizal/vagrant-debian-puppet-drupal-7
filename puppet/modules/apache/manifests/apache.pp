@@ -35,6 +35,12 @@ class apache (
    require => Exec['apt-get update']
  }
 
+#change document root to vagrant/sites
+  file { '/var/www':
+     ensure => 'link',
+     target => '/vagrant/sites',
+     force => true,
+  }
 }
 
 
