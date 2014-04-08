@@ -8,7 +8,7 @@ class drush (
   exec { 'download-drush':
     command => "wget https://github.com/drush-ops/drush/archive/${version}.tar.gz",
     path => '/usr/bin/',
-    onlyif => "test -e /home/vagrant/${version}.tar.gz"
+    onlyif => "test -e ~/${version}.tar.gz"
   }  
 
   exec { 'extract-drush':
