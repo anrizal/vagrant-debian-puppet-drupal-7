@@ -8,14 +8,14 @@ class drush (
   exec { 'download-drush':
     command => "wget https://github.com/drush-ops/drush/archive/${version}.tar.gz",
     path => '/usr/bin/',
-    onlyif => "test -e ~/${version}.tar.gz"
+    creates => "/home/vagrant/${version}.tar.gz"
   }  
 
   exec { 'extract-drush':
     command => "tar -C /opt/ -xzf ${version}.tar.gz",
     path => '/bin',
     require => Exec ["download-drush"],
-    onlyif => "test -d /opt/drush-${version}/",
+    creates => "/opt/drush-${version}"
   }
 
   file { "/opt/drush-${version}":
