@@ -7,7 +7,7 @@ class system-tools (
     'aptitude',
     'unzip',
     'nano',
-    'make'
+    'dos2unix',
   ]
 ) {
   package { $packages:
