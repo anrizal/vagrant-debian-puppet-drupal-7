@@ -3,7 +3,9 @@ class apache (
   $modules = [
     'rewrite',
     'headers',
-],
+],$conf_files = [
+    'apache2.conf',
+  ]
 
 ) {
 
@@ -41,6 +43,10 @@ class apache (
      target => '/vagrant/sites',
      force => true,
   }
+
+#custom apache settings
+ apache::conf_file { $conf_files: }
+
 }
 
 
